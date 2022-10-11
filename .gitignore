@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+# flask
+/backend/env
+/backend/__pycache__
+
 # testing
 /coverage
 
