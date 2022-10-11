@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import axios from 'axios';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useState } from "react";
+import axios from "axios";
+import "./App.css";
+
+import AppBar from "./components/AppBar/AppBar";
 
 function App() {
-
   const [profileData, setProfileData] = useState(null);
 
   const getData = () => {
@@ -12,46 +13,34 @@ function App() {
       method: "GET",
       url: "/profile",
     })
-    .then((response) => {
-      const res = response.data;
-      setProfileData(({
-        profile_name: res.name,
-        about_me: res.about,
-      }))
-    })
-    .catch((error) => {
-      console.log('getting here');
-      if(error.response) {
-        console.log(error.response);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      }
-    })
-  }
+      .then((response) => {
+        const res = response.data;
+        setProfileData({
+          profile_name: res.name,
+          about_me: res.about,
+        });
+      })
+      .catch((error) => {
+        console.log("getting here");
+        if (error.response) {
+          console.log(error.response);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        }
+      });
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <AppBar />
         <p>To get your profile details: </p>
         <button onClick={getData}>Click me</button>
-        {profileData && <div>
-              <p>Profile name: {profileData.profile_name}</p>
-              <p>About me: {profileData.about_me}</p>
-            </div>
-        }
+        {profileData && (
+          <div>
+            <p>Profile name: {profileData.profile_name}</p>
+            <p>About me: {profileData.about_me}</p>
+          </div>
+        )}
       </header>
-    </div>
   );
 }
 
