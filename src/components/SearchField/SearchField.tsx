@@ -1,60 +1,70 @@
-import React from "react";
-import { styled, alpha } from "@mui/material/styles";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from '@mui/icons-material/Search';
+import React, { useState, useContext } from "react";
+import { AppContext } from "../../App";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
+import search from "../../api/search";
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
-}));
+import ITrackResult from "../../interfaces/ITrackResult";
+
+import "./SearchField.css";
+import "../../index.css";
 
 export default function SearchField() {
+  const { setSelectedSongInfo } = useContext(AppContext);
+
+  const [results, setResults] = useState<Array<ITrackResult>>([]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    search(e.target.value, setResults);
+  };
+
   return (
-    <Search>
-      <SearchIconWrapper>
-        <SearchIcon />
-      </SearchIconWrapper>
-      <StyledInputBase
-        placeholder="Search…"
-        inputProps={{ "aria-label": "search" }}
+    <Box className="diff-flex flex-child">
+      <Autocomplete
+        sx={{width: 3/5}}
+        className='flex-end'
+        disableClearable
+        getOptionLabel={(option) => option.name}
+        onChange={(event, value) => {
+          setSelectedSongInfo(value);
+        }}
+        options={results}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleChange(e)
+            }
+            InputProps={{
+              ...params.InputProps,
+              type: "search",
+            }}
+          />
+        )}
+        renderOption={(props, option) => {
+          return (
+            <Box
+              {...props}
+              key={option.uri}
+              component="li"
+              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+            >
+              <img
+                loading="lazy"
+                width="20"
+                src={option.album.images[option.album.images.length - 1].url}
+                alt=""
+              />
+              {`${option.name} - ${option.artists[0].name}`}
+            </Box>
+          );
+        }}
       />
-    </Search>
+    </Box>
   );
 }

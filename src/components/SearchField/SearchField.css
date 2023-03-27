@@ -1,0 +1,18 @@
+.search-container {
+    position: relative;
+    border-radius: 4%;
+    margin-left: 0;
+    width: 100%;
+    border: 1px solid red;
+    background-color: hsla(0, 0%, 100%, 0.15);
+}
+
+.search-container:hover {
+    background-color: hsla(0, 0%, 100%, 0.25);
+}
+
+@media screen and (max-width: 600px) {
+    .search-container {
+        width: auto;
+    }
+}
