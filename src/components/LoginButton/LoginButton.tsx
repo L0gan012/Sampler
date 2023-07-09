@@ -8,13 +8,13 @@ import Box from "@mui/material/Box";
 export default function LoginButton() {
   const [url, setUrl] = useState();
 
-  useEffect(() => {
-    authurl().then((response) => setUrl(response));
-  }, []);
+  // useEffect(() => {
+  //   authurl().then((response) => setUrl(response));
+  // }, []);
 
   return (
     <Box className="flex-child">
-      <Button variant="contained" href={url}>
+      <Button variant="contained" href={"/auth/login"}>
         Login
       </Button>
     </Box>
