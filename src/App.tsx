@@ -43,7 +43,6 @@ function App() {
   return (
     <AppContext.Provider value={appStatus}>
       <Banner title="Samplify" />
-      <div>Andrew was here</div>
       <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         <SongInfo />
       </Box>
