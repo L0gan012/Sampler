@@ -2,8 +2,8 @@ import ITrackResult from "./ITrackResult";
 import IUser from "./IUser";
 
 export default interface IAppContext {
-    isLoggedIn: boolean;
-    setIsLoggedIn: Function;
+    token: string;
+    setToken: Function;
     userInfo: IUser | undefined;
     setUserInfo: Function;
     selectedSongInfo: ITrackResult | undefined;

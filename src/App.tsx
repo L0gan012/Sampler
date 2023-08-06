@@ -1,6 +1,5 @@
 import React, { useState, createContext, useEffect } from "react";
-import { loggedIn } from "./utils/spotifyUtils";
-import getToken from "./api/authurl";
+import getToken from "./api/auth";
 
 import Banner from "./components/Banner/Banner";
 import SongInfo from "./components/SongInfo/SongInfo";
@@ -13,12 +12,11 @@ import Box from "@mui/material/Box";
 import "./index.css";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./themes/DefaultTheme";
-import LoginButton from "./components/LoginButton/LoginButton";
 import Player from "./components/Player/Player";
 
 export const AppContext = createContext<IAppContext>({
-  isLoggedIn: false,
-  setIsLoggedIn: () => {},
+  token: "",
+  setToken: () => {},
   userInfo: undefined,
   setUserInfo: () => {},
   selectedSongInfo: undefined,
@@ -26,24 +24,19 @@ export const AppContext = createContext<IAppContext>({
 });
 
 function App() {
-  const [token, setToken] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [token, setToken] = useState("");
   const [userInfo, setUserInfo] = useState<IUser>();
   const [selectedSongInfo, setSelectedSongInfo] = useState<
     ITrackResult | undefined
   >(undefined);
-
-  // useEffect(() => {
-  //   setIsLoggedIn(loggedIn);
-  // }, []);
 
   useEffect(() => {
     getToken(setToken);
   }, []);
 
   const appStatus = {
-    isLoggedIn: isLoggedIn,
-    setIsLoggedIn: setIsLoggedIn,
+    token: token,
+    setToken: setToken,
     userInfo: userInfo,
     setUserInfo: setUserInfo,
     selectedSongInfo: selectedSongInfo,
@@ -52,7 +45,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {/* <AppContext.Provider value={appStatus}> */}
+      <AppContext.Provider value={appStatus}>
         <Box
           sx={{
             display: "flex",
@@ -61,20 +54,22 @@ function App() {
             width: "100vw",
           }}
         >
-          {token === '' ? <LoginButton /> : <Player token={token} />}
-          {/* <Banner title="Samplify" /> */}
-          {/* <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-            }}
-          >
-            {selectedSongInfo && <SongInfo />}
-          </Box> */}
+          <Banner title="Samplify" />
+          {selectedSongInfo && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+              }}
+            >
+              <SongInfo />
+            </Box>
+          )}
+          {token !== "" && <Player token={token} />}
         </Box>
-      {/* </AppContext.Provider> */}
+      </AppContext.Provider>
     </ThemeProvider>
   );
 }

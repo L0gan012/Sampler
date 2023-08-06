@@ -3,9 +3,7 @@ import { AppContext } from "../../App";
 
 import search from "../../api/search";
 
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import { Typography, Box, TextField, Autocomplete } from "@mui/material";
 
 import ITrackResult from "../../interfaces/ITrackResult";
 
@@ -13,13 +11,25 @@ import "./SearchField.css";
 import "../../index.css";
 
 export default function SearchField() {
-  const { setSelectedSongInfo } = useContext(AppContext);
+  const { token, setSelectedSongInfo } = useContext(AppContext);
 
   const [results, setResults] = useState<Array<ITrackResult>>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectChange = (e: React.SyntheticEvent, value: any, reason: string) => {
+    switch (reason) {
+      case "selectOption":
+        setSelectedSongInfo(value);
+        break;
+      case "clear":
+        setResults([]);
+        setSelectedSongInfo(undefined);
+        break;
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    search(e.target.value, setResults);
+    token !== '' && search(e.target.value, setResults);
   };
 
   return (
@@ -27,23 +37,14 @@ export default function SearchField() {
       <Autocomplete
         sx={{width: 3/5}}
         className='flex-end'
-        disableClearable
         getOptionLabel={(option) => option.name}
-        onChange={(event, value) => {
-          setSelectedSongInfo(value);
-        }}
+        onChange={handleSelectChange}
         options={results}
         renderInput={(params) => (
           <TextField
             {...params}
             label="Search"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleChange(e)
-            }
-            InputProps={{
-              ...params.InputProps,
-              type: "search",
-            }}
+            onChange={handleInputChange}
           />
         )}
         renderOption={(props, option) => {
@@ -60,7 +61,7 @@ export default function SearchField() {
                 src={option.album.images[option.album.images.length - 1].url}
                 alt=""
               />
-              {`${option.name} - ${option.artists[0].name}`}
+              <Typography>{`${option.name} - ${option.artists[0].name}`}</Typography>
             </Box>
           );
         }}

@@ -25,7 +25,8 @@ var generateRandomString = function (length) {
   return text;
 };
 
-app.get("/auth/login", (req, res) => {
+// Sends user to the spotify authorization page
+app.get("/api/auth/login", (req, res) => {
   var scope = "streaming user-read-email user-read-private";
 
   var state = generateRandomString(16);
@@ -44,7 +45,8 @@ app.get("/auth/login", (req, res) => {
   );
 });
 
-app.get("/auth/callback", (req, res) => {
+// Endpoint hit when the user verifies that Sampler can use their Spotify information
+app.get("/api/auth/callback", (req, res) => {
   var code = req.query.code;
 
   var authOptions = {
@@ -73,10 +75,42 @@ app.get("/auth/callback", (req, res) => {
   });
 });
 
-app.get("/auth/token", (req, res) => {
+// Gets the access token used for making requests
+app.get("/api/auth/token", (req, res) => {
   res.json({
     access_token: access_token,
   });
+});
+
+app.get("/api/me", (req, res) => {
+  var options = {
+    url: 'https://api.spotify.com/v1/me',
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    }
+  }
+  request.get(options, function (error, response, body) {
+    if(!error && response.statusCode === 200){
+      res.send(body);
+    }
+  })
+});
+
+app.get("/api/search", (req, res) => {
+  var options = {
+    url: 'https://api.spotify.com/v1/search',
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    },
+    qs: {q: req.query.q, type: 'track', limit: '10'},
+  }
+  request.get(options, function (error, response, body) {
+    if(!error && response.statusCode === 200){ 
+      console.log('getting here');
+      res.send(body);
+    }
+    console.log('still error')
+  })
 });
 
 app.listen(port, () => {

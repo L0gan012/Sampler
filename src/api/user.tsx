@@ -1,11 +1,9 @@
 import axios from "axios";
 
-export default async function user() {
-  let user = {};
+export default async function user(setUserInfo: Function) {
   await axios
-    .get("http://localhost:3001/me")
+    .get("/api/me")
     .then((res) => {
-        user = res.data
+        setUserInfo(res.data);
     });
-    return user;
 }

@@ -18,12 +18,10 @@ import { Logout, Settings } from "@mui/icons-material";
 import "../../index.css";
 
 export default function AccountMenu() {
-  const { userInfo, setUserInfo, setIsLoggedIn } = useContext(AppContext);
+  const { userInfo, setUserInfo, setToken } = useContext(AppContext);
 
   if (!userInfo) {
-    user().then((data) => {
-      setUserInfo(data);
-    });
+    user(setUserInfo);
   }
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -40,7 +38,7 @@ export default function AccountMenu() {
   const handleLogout = () => {
     handleClose();
     setUserInfo(null);
-    setIsLoggedIn(false);
+    setToken('');
     logout();
   };
 

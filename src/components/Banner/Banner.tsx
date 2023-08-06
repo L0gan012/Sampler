@@ -19,13 +19,13 @@ interface IBanner {
 
 export default function Banner({ title }: IBanner) {
 
-  const {isLoggedIn} = useContext(AppContext);
+  const {token} = useContext(AppContext);
 
   return (
     <Box>
       <AppBar position="static">
         <Toolbar className="flex">
-          {isLoggedIn ? <AccountMenu />: <LoginButton />}
+          {token !== '' ? <AccountMenu />: <LoginButton />}
           <Typography
             variant="h6"
             noWrap
