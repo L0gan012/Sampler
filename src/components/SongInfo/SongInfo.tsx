@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AppContext } from "../../App";
+import { AppContext } from "../../AppContext";
 
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";

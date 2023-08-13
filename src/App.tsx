@@ -1,46 +1,45 @@
-import React, { useState, createContext, useEffect } from "react";
-import getToken from "./api/auth";
+import React, { useState, useEffect } from "react";
+import { AppContext } from "./AppContext";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "./themes/DefaultTheme";
+import Box from "@mui/material/Box";
 
 import Banner from "./components/Banner/Banner";
 import SongInfo from "./components/SongInfo/SongInfo";
+import SongController from "./components/SongControls/SongController";
 
-import IAppContext from "./interfaces/IAppContext";
 import ITrackResult from "./interfaces/ITrackResult";
 import IUser from "./interfaces/IUser";
-import Box from "@mui/material/Box";
+
+import getToken from "./api/auth";
+
+import usePlayer from "./hooks/usePlayer";
 
 import "./index.css";
-import { ThemeProvider } from "@mui/material";
-import { theme } from "./themes/DefaultTheme";
-import Player from "./components/Player/Player";
-
-export const AppContext = createContext<IAppContext>({
-  token: "",
-  setToken: () => {},
-  userInfo: undefined,
-  setUserInfo: () => {},
-  selectedSongInfo: undefined,
-  setSelectedSongInfo: () => {},
-});
 
 function App() {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState<string>("");
   const [userInfo, setUserInfo] = useState<IUser>();
   const [selectedSongInfo, setSelectedSongInfo] = useState<
     ITrackResult | undefined
   >(undefined);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     getToken(setToken);
   }, []);
 
+  usePlayer(token, setToken);
+
   const appStatus = {
-    token: token,
-    setToken: setToken,
-    userInfo: userInfo,
-    setUserInfo: setUserInfo,
-    selectedSongInfo: selectedSongInfo,
-    setSelectedSongInfo: setSelectedSongInfo,
+    token,
+    setToken,
+    userInfo,
+    setUserInfo,
+    selectedSongInfo,
+    setSelectedSongInfo,
+    isPlaying,
+    setIsPlaying,
   };
 
   return (
@@ -59,15 +58,16 @@ function App() {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100%",
               }}
             >
               <SongInfo />
+              <SongController />
             </Box>
           )}
-          {token !== "" && <Player token={token} />}
         </Box>
       </AppContext.Provider>
     </ThemeProvider>

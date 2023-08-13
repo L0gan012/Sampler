@@ -6,4 +6,5 @@ export default interface ITrackResult {
   album: IAlbum;
   artists: Array<IArtist>;
   uri: string;
+  duration_ms: number;
 }

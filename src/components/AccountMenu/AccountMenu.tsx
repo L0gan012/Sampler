@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AppContext } from "../../App";
+import { AppContext } from "../../AppContext";
 import { logout } from "../../utils/spotifyUtils";
 
 import user from "../../api/user";
@@ -37,7 +37,7 @@ export default function AccountMenu() {
 
   const handleLogout = () => {
     handleClose();
-    setUserInfo(null);
+    setUserInfo(undefined);
     setToken('');
     logout();
   };

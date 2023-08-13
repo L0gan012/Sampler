@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AppContext } from "../../App";
+import { AppContext } from "../../AppContext";
 
 import search from "../../api/search";
 
@@ -9,16 +9,20 @@ import ITrackResult from "../../interfaces/ITrackResult";
 
 import "./SearchField.css";
 import "../../index.css";
+import { playSong } from "../../api/player";
 
 export default function SearchField() {
-  const { token, setSelectedSongInfo } = useContext(AppContext);
+  const { token, setSelectedSongInfo, setIsPlaying } = useContext(AppContext);
 
   const [results, setResults] = useState<Array<ITrackResult>>([]);
 
   const handleSelectChange = (e: React.SyntheticEvent, value: any, reason: string) => {
     switch (reason) {
       case "selectOption":
+        console.log(value);
         setSelectedSongInfo(value);
+        playSong(value.uri);
+        setIsPlaying(true);
         break;
       case "clear":
         setResults([]);

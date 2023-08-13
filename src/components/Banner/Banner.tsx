@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AppContext } from "../../App";
+import { AppContext } from "../../AppContext";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
